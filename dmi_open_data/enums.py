@@ -1,7 +1,6 @@
 from enum import Enum
 
 
-# See https://confluence.govcloud.dk/pages/viewpage.action?pageId=26476616
 class Parameter(Enum):
     TempDry = "temp_dry"
     TempDew = "temp_dew"
@@ -52,7 +51,6 @@ class Parameter(Enum):
     LeavHumDurPast1h = "leav_hum_dur_past1h"
 
 
-# https://confluence.govcloud.dk/pages/viewpage.action?pageId=41717444
 class ClimateDataParameter(Enum):
     MeanTemp = "mean_temp"
     MeanDailyMaxTemp = "mean_daily_max_temp"

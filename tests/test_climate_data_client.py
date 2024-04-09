@@ -13,7 +13,7 @@ class TestClient(unittest.TestCase):
     def test_observations(self):
         climate_data = self.client.get_climate_data(
             parameter=ClimateDataParameter.MeanTemp,
-            station_id="06184",
+            station_id="06041",
             from_time=datetime(2021, 7, 20),
             to_time=datetime(2021, 7, 24),
             time_resolution="day",

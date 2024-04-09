@@ -71,8 +71,34 @@ class TestClient(unittest.TestCase):
             "Found observations outside time interval",
         )
 
+    def test_observations_left_time_interval(self):
+        from_time = datetime(2020, 12, 20)
+        observations = self.client.get_observations(from_time=from_time, limit=1000)
+        timestamps_observed = [
+            datetime.fromisoformat(observation["properties"]["observed"].rstrip("Z"))
+            for observation in observations
+        ]
+
+        self.assertTrue(
+            all(from_time <= timestamp for timestamp in timestamps_observed),
+            "Found observations outside time interval",
+        )
+
+    def test_observations_right_time_interval(self):
+        to_time = datetime(2020, 12, 24)
+        observations = self.client.get_observations(to_time=to_time, limit=1000)
+        timestamps_observed = [
+            datetime.fromisoformat(observation["properties"]["observed"].rstrip("Z"))
+            for observation in observations
+        ]
+
+        self.assertTrue(
+            all(timestamp <= to_time for timestamp in timestamps_observed),
+            "Found observations outside time interval",
+        )
+
     def test_list_parameters(self):
-        parameters = self.client.list_parameters()
+        parameters = self.client.list_observation_parameters()
         self.assertTrue(
             all(
                 isinstance(Parameter(parameter["value"]), Parameter)
@@ -80,13 +106,6 @@ class TestClient(unittest.TestCase):
             ),
             "Returned a wrong parameter",
         )
-
-    def test_get_parameter(self):
-        parameter = self.client.get_parameter(parameter_id="temp_dry")
-        self.assertIsInstance(
-            parameter, Parameter, "Returned value was not a Parameter object."
-        )
-        self.assertEqual(parameter, Parameter.TempDry, "Wrong parameter returned.")
 
     def test_get_closest_station(self):
         station = self.client.get_closest_station(

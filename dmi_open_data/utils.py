@@ -1,19 +1,19 @@
-from datetime import datetime
 from math import cos, asin, sqrt, pi
+import datetime as dt
 
 
 # Constants
-CONST_EARTH_RADIUS = 6371       # km
-CONST_EARTH_DIAMETER = 12742    # km
-EPOCH = datetime.utcfromtimestamp(0)
+CONST_EARTH_RADIUS = 6371  # km
+CONST_EARTH_DIAMETER = 12742  # km
+EPOCH = dt.datetime.fromtimestamp(0, dt.UTC)
 
 
-def date2microseconds(date: datetime) -> int:
+def date2microseconds(date: dt.datetime) -> int:
     return int((date - EPOCH).total_seconds() * 1000000.0)
 
 
-def microseconds2date(microseconds: float) -> datetime:
-    return datetime.utcfromtimestamp(microseconds / 1000000)
+def microseconds2date(microseconds: float) -> dt.datetime:
+    return dt.datetime.fromtimestamp(microseconds / 1000000, dt.UTC)
 
 
 # From Stackoverflow answer
@@ -31,5 +31,9 @@ def distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         float: Haversine distance in km between point 1 and 2.
     """
     p = pi / 180.0
-    a = 0.5 - cos((lat2 - lat1) * p) / 2.0 + cos(lat1 * p) * cos(lat2 * p) * (1.0 - cos((lon2 - lon1) * p)) / 2
+    a = (
+        0.5
+        - cos((lat2 - lat1) * p) / 2.0
+        + cos(lat1 * p) * cos(lat2 * p) * (1.0 - cos((lon2 - lon1) * p)) / 2
+    )
     return CONST_EARTH_DIAMETER * asin(sqrt(a))  # 2*R*asin...
