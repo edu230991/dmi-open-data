@@ -8,7 +8,7 @@ on:
       - "**.py"
       - "**.toml"
       - "./dmi_open_data/*"
-      - ".github/*"
+      - "**.yml"
 
 permissions:
   contents: write
