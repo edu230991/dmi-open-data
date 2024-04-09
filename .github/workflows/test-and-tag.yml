@@ -8,6 +8,7 @@ on:
       - "**.py"
       - "**.toml"
       - "./dmi_open_data/*"
+      - ".github/*"
 
 permissions:
   contents: write
@@ -27,13 +28,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install .
       - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
         env:
           DMI_API_KEY: ${{ secrets.DMI_API_KEY }}
           DMI_CLIMATE_DATA_API_KEY: ${{ secrets.DMI_CLIMATE_DATA_API_KEY }}
           DMI_FORECAST_EDR_API_KEY: ${{ secrets.DMI_FORECAST_EDR_API_KEY }}
-        run: |
-          pip install pytest pytest-cov
-          python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
       - name: Upload pytest test results
         uses: actions/upload-artifact@v4
         with:
