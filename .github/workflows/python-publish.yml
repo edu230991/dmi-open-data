@@ -1,4 +1,4 @@
-name: Upload PyEnerginet to Pypi
+name: Upload to Pypi
 
 on:
   release:
