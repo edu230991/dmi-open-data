@@ -1,0 +1,51 @@
+name: Run tests and tag commit
+
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - "**.py"
+      - "**.toml"
+      - "./dmi_open_data/*"
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-draft-release:
+    name: Build and run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: junit/test-results.xml
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+      - name: Get package version
+        run: |
+          python .github/workflows/append_env_var.py
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create
+          '${{ env.VERSION_TAG }}'
+          --repo '${{ github.repository }}'
+          --title '${{ env.VERSION_TAG }}'
+          --prerelease
